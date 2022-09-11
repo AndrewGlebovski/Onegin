@@ -1,11 +1,30 @@
+/**
+ * \file onegin.cpp
+ * \brief Contains sorting functions
+*/
+
 #include <stdlib.h>
 #include <ctype.h>
 #include "onegin.hpp"
 
 
+/**
+ * \brief Get next alpha symbol in string
+ * \param [in] str String to search alpha in
+ * \return Pointer to first alpha element
+*/
 const char *get_next_alpha(const char *str);
 
 
+/**
+ * \brief Compares two strings using get_next_alpha()
+ * \param [in] ptrA The first element to compare
+ * \param [in] ptrB The second element to compare
+ * \return Standart compare function output
+ * 
+ * This function is used in sort_poem() as compare function. 
+ * So it takes pointers to elements of array of strings
+*/
 int front_compare(const void *ptrA, const void *ptrB);
 
 

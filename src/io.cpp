@@ -1,21 +1,31 @@
+/**
+ * \file io.cpp
+ * \brief Contains input and output functions
+*/
+
 #include <stdlib.h>
 #include "onegin.hpp"
 
 
-int read_poem(char *poem[], FILE *stream) {
+int read_poem(char ***poem, FILE *stream) {
     if (!stream)
         printf("File pointer was null");
 
-    for(int l = 0; l < MAX_LINES; l++) {
-        poem[l] = (char *) malloc(MAX_LENGTH);
+    int lines = 0;
+    char line[100];
+    while(fgets(line, MAX_LENGTH, stream) != NULL) 
+        lines++;
 
-        if (fgets(poem[l], MAX_LENGTH, stream) == NULL) {
-            poem[l] = NULL;
-            return l;
-        }
+    rewind(stream);
+
+    *poem = (char **) calloc(lines, sizeof(char *));
+
+    for(int l = 0; l < lines; l++) {
+        (*poem)[l] = (char *) calloc(MAX_LENGTH, sizeof(char));
+        fgets((*poem)[l], MAX_LENGTH, stream);
     }
 
-    return 1000;
+    return lines;
 }
 
 
@@ -23,8 +33,9 @@ void print_poem(char *poem[], FILE *stream) {
     if (!stream)
         printf("File pointer was null");
 
-    for(int i = 0; poem[i] != NULL && i < MAX_LINES; i++) {
+    for(int i = 0; poem[i] != NULL; i++) {
         if (fputs(poem[i], stream) == EOF)
             printf("fputs returned EOF\n");
+        fflush(stream);
     }
 }
