@@ -6,10 +6,6 @@
 #include <stdio.h>
 
 
-/// Length of the poem's line
-const int MAX_LENGTH = 100;
-
-
 /**
  * \brief Sorts the poem using qsort()
  * \param [out] poem Array of strings to sort
@@ -25,6 +21,7 @@ void sort_poem(char *poem[], unsigned int poem_size);
  * \param [out] poem Pointer to an array of strings
  * \param [in] stream File for input
  * \return Number of lines read
+ * \note New line symbol will be discarded
 */
 int read_poem(char ***poem, FILE *stream);
 
@@ -33,5 +30,6 @@ int read_poem(char ***poem, FILE *stream);
  * \brief Prints poem to the given file
  * \param [in] poem Array of strings
  * \param [in] stream File for output
+ * \note New line symbol will be added to the end of each line
 */
 void print_poem(char **poem, FILE *stream);
