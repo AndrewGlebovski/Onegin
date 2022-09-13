@@ -6,6 +6,12 @@
 #include <stdio.h>
 
 
+typedef struct {
+    const char *str = nullptr;
+    int len = -1;
+} StringPointer;
+
+
 /**
  * \brief Sorts the poem using qsort()
  * \param [out] poem Array of strings to sort
@@ -13,7 +19,7 @@
  * \warning Function will not work if you pass an incorrect size.
  * You should pass only number of not NULL elements
 */
-void sort_poem(char *poem[], unsigned int poem_size);
+void sort_poem(StringPointer poem[], unsigned int poem_size);
 
 
 /**
@@ -23,7 +29,7 @@ void sort_poem(char *poem[], unsigned int poem_size);
  * \return Number of lines read
  * \note New line symbol will be discarded
 */
-int read_poem(char ***poem, FILE *stream);
+int read_poem(StringPointer **poem, FILE *stream);
 
 
 /**
@@ -32,4 +38,4 @@ int read_poem(char ***poem, FILE *stream);
  * \param [in] stream File for output
  * \note New line symbol will be added to the end of each line
 */
-void print_poem(char **poem, FILE *stream);
+void print_poem(StringPointer poem[], FILE *stream);

@@ -7,7 +7,7 @@
 #include "onegin.hpp"
 
 
-int read_poem(char ***poem, FILE *stream) {
+int read_poem(StringPointer **poem, FILE *stream) {
     if (!stream)
         printf("File pointer was null");
 
@@ -20,30 +20,34 @@ int read_poem(char ***poem, FILE *stream) {
 
     rewind(stream);
 
-    *poem = (char **) calloc(lines, sizeof(char *));
+    *poem = (StringPointer *) calloc(lines + 1, sizeof(StringPointer));
 
     char *storage = (char *) calloc(chars, sizeof(char));
 
     for(int l = 0; l < lines; l++) {
-        (*poem)[l] = storage;
+        (*poem)[l] = {storage, 0};
         int c = 0;
 
         while((c = fgetc(stream)) != '\n')
             *storage++ = (char) c;
 
+        (*poem)[l].len = (int)(storage - (*poem)[l].str);
+        
         *storage++ = '\0';
     }
+
+    (*poem)[lines] = {nullptr, -1}; 
 
     return lines;
 }
 
 
-void print_poem(char *poem[], FILE *stream) {
+void print_poem(StringPointer poem[], FILE *stream) {
     if (!stream)
         printf("File pointer was null");
 
-    for(int i = 0; poem[i] != NULL; i++) {
-        fprintf(stream, "%s\n", poem[i]);
+    for(int i = 0; poem[i].str != nullptr && poem[i].len != -1; i++) {
+        fprintf(stream, "%s\n", poem[i].str);
         fflush(stream);
     }
 }

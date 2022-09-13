@@ -60,7 +60,8 @@ const char *get_next_alpha(const char *str) {
 
 
 int front_compare(const void *ptrA, const void *ptrB) {
-    const char *a = *(const char **) ptrA, *b = *(const char **) ptrB;
+    const char *a = ((StringPointer *) ptrA) -> str;
+    const char *b = ((StringPointer *) ptrB) -> str;
     
     while (1) {
         a = get_next_alpha(a);
@@ -88,9 +89,8 @@ const char *get_prev_alpha(const char *str) {
 
 
 int back_compare(const void *ptrA, const void *ptrB) {
-    const char *a = *(const char **) ptrA, *b = *(const char **) ptrB;
-    a += strlen(a);
-    b += strlen(b);
+    const char *a = ((StringPointer *) ptrA) -> str + ((StringPointer *) ptrA) -> len; 
+    const char *b = ((StringPointer *) ptrB) -> str + ((StringPointer *) ptrB) -> len;
     
     while (1) {
         a = get_prev_alpha(a);
@@ -107,6 +107,6 @@ int back_compare(const void *ptrA, const void *ptrB) {
 }
 
 
-void sort_poem(char *poem[], unsigned int poem_size) {
+void sort_poem(StringPointer poem[], unsigned int poem_size) {
     qsort(poem, poem_size, sizeof(*poem), &back_compare);
 }
