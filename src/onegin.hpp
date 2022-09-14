@@ -13,11 +13,10 @@ typedef struct {
 
 
 /**
- * \brief Sorts the poem using qsort()
+ * \brief Sorts the poem
  * \param [out] poem Array of strings to sort
  * \param [in] poem_size Poem's actual size
- * \warning Function will not work if you pass an incorrect size.
- * You should pass only number of not NULL elements
+ * \warning Function doesn't work correctly with NULL elements
 */
 void sort_poem(StringPointer poem[], unsigned int poem_size);
 

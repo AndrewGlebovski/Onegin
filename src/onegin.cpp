@@ -49,6 +49,25 @@ const char *get_prev_alpha(const char *str);
 int back_compare(const void *ptrA, const void *ptrB);
 
 
+/**
+ * \brief Swaps two values
+ * \param [in] ptrA The first element to swap
+ * \param [in] ptrB The second element to swap
+ * \param [in] size Element size in bytes
+*/ 
+void swap(void *ptrA, void *ptrB, size_t size);
+
+
+/**
+ * \brief Sorts an array
+ * \param [in] arr Array to sort
+ * \param [in] size Array size
+ * \param [in] s Element size in bytes
+ * \param [in] cmp Compare function
+*/ 
+void bubble_sort(void *arr, size_t size, size_t s, int (*cmp)(const void *, const void*));
+
+
 const char *get_next_alpha(const char *str) {
     while (!isalpha(*str++)) {
         if (*str == '\0') 
@@ -89,8 +108,8 @@ const char *get_prev_alpha(const char *str) {
 
 
 int back_compare(const void *ptrA, const void *ptrB) {
-    const char *a = ((StringPointer *) ptrA) -> str + ((StringPointer *) ptrA) -> len; 
-    const char *b = ((StringPointer *) ptrB) -> str + ((StringPointer *) ptrB) -> len;
+    const char *a = ((StringPointer *) ptrA) -> str + ((StringPointer *) ptrA) -> len * sizeof(char); 
+    const char *b = ((StringPointer *) ptrB) -> str + ((StringPointer *) ptrB) -> len * sizeof(char);
     
     while (1) {
         a = get_prev_alpha(a);
@@ -108,5 +127,26 @@ int back_compare(const void *ptrA, const void *ptrB) {
 
 
 void sort_poem(StringPointer poem[], unsigned int poem_size) {
-    qsort(poem, poem_size, sizeof(*poem), &back_compare);
+    bubble_sort(poem, poem_size, sizeof(*poem), &back_compare);
+}
+
+
+void swap(void *ptrA, void *ptrB, size_t size) {
+    char *tmp = (char *) calloc(size, sizeof(char));
+    memmove(tmp, ptrA, size);
+    memmove(ptrA, ptrB, size);
+    memmove(ptrB, tmp, size);
+    free(tmp);
+}
+
+
+void bubble_sort(void *arr, size_t size, size_t s, int (*cmp)(const void *, const void*)) {
+    for(size_t i = 0; i < size - 1; i++) {
+        for(size_t j = i + 1; j < size; j++) {
+            void *ptrA = (char *) arr + j * s, *ptrB = (char *) arr + i * s;
+
+            if (cmp(ptrA, ptrB) < 0)
+                swap(ptrA, ptrB, s);
+        }
+    }
 }
