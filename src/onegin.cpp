@@ -1,5 +1,5 @@
 /**
- * \file onegin.cpp
+ * \file
  * \brief Contains sorting functions
 */
 
@@ -126,8 +126,35 @@ int back_compare(const void *ptrA, const void *ptrB) {
 }
 
 
-void sort_poem(StringPointer poem[], unsigned int poem_size) {
-    bubble_sort(poem, poem_size, sizeof(*poem), &back_compare);
+void sort_poem(StringPointer poem[], long size, SORT_FUNC sort_func, SORT_MODE sort_mode) {
+    int (*cmp)(const void *, const void *) = NULL;
+    void (*sort)(void *, size_t, size_t, int (*cmp)(const void *, const void*)) = NULL;
+
+    switch(sort_mode) {
+        case FRONT_CMP:
+            cmp = &front_compare;
+            break;
+        case BACK_CMP:
+            cmp = &back_compare;
+            break;
+        default:
+            printf("Invalid sort function code");
+            return;
+    }
+
+    switch(sort_func) {
+        case BUBBLE_SORT:
+            sort = &bubble_sort;
+            break;
+        case QUICK_SORT:
+            sort = &qsort;
+            break;
+        default:
+            printf("Invalid sort function code");
+            return;
+    }
+
+    (*sort)(poem, size, sizeof(*poem), cmp);
 }
 
 

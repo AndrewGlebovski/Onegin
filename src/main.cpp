@@ -1,5 +1,5 @@
 /**
- * \file main.cpp
+ * \file
  * \brief Main file of this program
 */
 
@@ -11,9 +11,12 @@ int main() {
     FILE *output = fopen("debug/output.txt", "w");
 
     StringPointer *poem;
-    unsigned int size = read_poem(&poem, input);
+    long size = read_poem(&poem, input);
 
-    sort_poem(poem, size);
+    if (size == 0)
+        return 1;
+
+    sort_poem(poem, size, BUBBLE_SORT, FRONT_CMP);
 
     print_poem(poem, output);
 

@@ -1,5 +1,5 @@
 /**
- * \file io.cpp
+ * \file
  * \brief Contains input and output functions
 */
 
@@ -7,11 +7,13 @@
 #include "onegin.hpp"
 
 
-int read_poem(StringPointer **poem, FILE *stream) {
-    if (!stream)
-        printf("File pointer was null");
+long read_poem(StringPointer **poem, FILE *stream) {
+    if (!stream) {
+        fprintf(stderr, "File pointer was null");
+        return 0;
+    }
 
-    int lines = 0, chars = 0;
+    long lines = 0, chars = 0;
     char line[100];
     while(fgets(line, 1000, stream) != NULL) 
         lines++;
@@ -43,8 +45,10 @@ int read_poem(StringPointer **poem, FILE *stream) {
 
 
 void print_poem(StringPointer poem[], FILE *stream) {
-    if (!stream)
-        printf("File pointer was null");
+    if (!stream) {
+        fprintf(stderr, "File pointer was null");
+        return;
+    }
 
     for(int i = 0; poem[i].str != nullptr && poem[i].len != -1; i++) {
         fprintf(stream, "%s\n", poem[i].str);

@@ -1,5 +1,5 @@
 /**
- * \file onegin.hpp
+ * \file
  * \brief It's a header file
 */
 
@@ -12,13 +12,25 @@ typedef struct {
 } StringPointer;
 
 
+typedef enum {
+    BUBBLE_SORT = 1,
+    QUICK_SORT  = 2
+} SORT_FUNC;
+
+
+typedef enum {
+    FRONT_CMP = 1,
+    BACK_CMP  = 2
+} SORT_MODE;
+
+
 /**
  * \brief Sorts the poem
  * \param [out] poem Array of strings to sort
- * \param [in] poem_size Poem's actual size
+ * \param [in] size Poem's actual size
  * \warning Function doesn't work correctly with NULL elements
 */
-void sort_poem(StringPointer poem[], unsigned int poem_size);
+void sort_poem(StringPointer poem[], long size, SORT_FUNC sort_func, SORT_MODE sort_mode);
 
 
 /**
@@ -28,7 +40,7 @@ void sort_poem(StringPointer poem[], unsigned int poem_size);
  * \return Number of lines read
  * \note New line symbol will be discarded
 */
-int read_poem(StringPointer **poem, FILE *stream);
+long read_poem(StringPointer **poem, FILE *stream);
 
 
 /**
