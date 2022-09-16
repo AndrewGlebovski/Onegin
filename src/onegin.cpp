@@ -34,18 +34,11 @@ const char *get_prev_alpha(const char *str);
 void swap(void *ptrA, void *ptrB, size_t size);
 
 
-int sort_poem(StringParser *poem, sort_t sort, cmp_t cmp) {
-    if (!sort) {
-        fprintf(stderr, "Sort function was NULL");
-        return 1;
-    }
+int sort_lines(String lines[], int size, sort_t sort, cmp_t cmp) {
+    ASSERT(sort, "Sort function was NULL", return 1);
+    ASSERT(cmp, "Compare function was NULL", return 1);
 
-    if (!cmp) {
-        fprintf(stderr, "Compare function was NULL");
-        return 1;
-    }
-
-    (*sort)(poem -> lines, poem -> size, sizeof(*(poem -> lines)), cmp);
+    (*sort)(lines, size, sizeof(*lines), cmp);
     return 0;
 }
 

@@ -11,17 +11,15 @@ int main() {
     FILE *input = fopen("debug/input.txt", "r");
     FILE *output = fopen("debug/output.txt", "w");
 
-    StringParser poem;
+    StringParser parser;
 
-    read_poem(&poem, input);
+    read_parser(&parser, NULL);
 
-    if (sort_poem(&poem, &qsort, &front_compare))
-        return 1;
+    sort_lines(parser.lines, parser.size, &qsort, &front_compare);
 
-    print_lines(poem.lines, output);
+    print_lines(parser.lines, output);
 
-    free_poem(&poem);
-    free_poem(&poem);
+    free_parser(&parser);
 
     fclose(input);
     fclose(output);

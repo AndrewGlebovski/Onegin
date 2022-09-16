@@ -7,11 +7,9 @@
 #include "onegin.hpp"
 
 
-int read_poem(StringParser *poem, FILE *stream) {
-    if (!stream) {
-        fprintf(stderr, "File pointer was null");
-        return 1;
-    }
+int read_parser(StringParser *parser, FILE *stream) {
+    ASSERT(parser, "StringParser was NULL", return 1);
+    ASSERT(stream, "File was NULL", return 1);
 
     long lines = 0, chars = 0;
     char line[100];
@@ -24,61 +22,53 @@ int read_poem(StringParser *poem, FILE *stream) {
 
     char *storage = (char *) calloc(chars, sizeof(char));
 
-    poem -> lines = (String *) calloc(lines + 1, sizeof(String));
-    poem -> text = storage;
-    poem -> status = FILL;
+    parser -> lines = (String *) calloc(lines + 1, sizeof(String));
+    parser -> text = storage;
+    parser -> status = FILL;
 
     for(int l = 0; l < lines; l++) {
-        (poem -> lines)[l] = {storage, 0};
+        (parser -> lines)[l] = {storage, 0};
         int c = 0;
 
         while((c = fgetc(stream)) != '\n')
             *storage++ = (char) c;
 
-        (poem -> lines)[l].len = (int)(storage - (poem -> lines)[l].str);
+        (parser -> lines)[l].len = (int)(storage - (parser -> lines)[l].str);
         
         *storage++ = '\0';
     }
 
-    (poem -> lines)[lines] = {nullptr, -1};
-    poem -> size = lines;
+    (parser -> lines)[lines] = {nullptr, -1};
+    parser -> size = lines;
 
     return 0;
 }
 
 
-void print_lines(String lines[], FILE *stream) {
-    if (!lines) {
-        fprintf(stderr, "Lines was null");
-        return;
-    }
-
-    if (!stream) {
-        fprintf(stderr, "File pointer was null");
-        return;
-    }
+int print_lines(String lines[], FILE *stream) {
+    ASSERT(lines, "Lines was null", return 1);
+    ASSERT(stream, "File was NULL", return 1);
 
     for(int i = 0; lines[i].str != nullptr && lines[i].len != -1; i++) {
         fprintf(stream, "%s\n", lines[i].str);
         fflush(stream);
     }
+
+    return 0;
 }
 
 
-void free_poem(StringParser *poem) {
-    if (!poem) {
-        fprintf(stderr, "Poem pointer was null");
-        return;
-    }
+int free_parser(StringParser *parser) {
+    ASSERT(parser, "StringParser was NULL", return 1);
+    ASSERT(parser -> status == FILL, "Double free is not allowed", return 1);
+    ASSERT(parser -> text != nullptr, "Text was NULL", return 1);
+    ASSERT(parser -> lines != nullptr, "Lines was NULL", return 1);
 
-    if (poem -> status == FILL) {
-        free(poem -> text);
-        free(poem -> lines);
-        poem -> status = FREE;
-        poem -> size = 0;
-    }
-    else {
-        printf("Double free is not allowed");
-        return;
-    }
+    free(parser -> text);
+    free(parser -> lines);
+
+    parser -> status = FREE;
+    parser -> size = 0;
+
+    return 0;
 }

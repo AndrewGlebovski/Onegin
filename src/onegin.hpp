@@ -3,6 +3,17 @@
  * \brief It's a header file
 */
 
+
+#define ASSERT(condition, msg, action) \
+do \
+    if (!(condition)) { \
+        printf("%s | %s in function %s in line %d\n", \
+        msg, __FILE__, __PRETTY_FUNCTION__, __LINE__); \
+        action; \
+    } \
+while(0)
+
+
 #include <stdio.h>
 
 
@@ -13,19 +24,23 @@ typedef struct {
 } String;
 
 
+/// Sort function template
 typedef void (*sort_t)(void *arr, size_t size, size_t elem_size, int (*cmp)(const void *ptrA, const void*ptrB));
 
 
+/// Compare function template
 typedef int (*cmp_t)(const void *ptrA, const void *ptrB);
 
 
+/// #StringParser possible status
 typedef enum {
-    INIT = 0,
-    FILL = 1,
-    FREE = 2
+    INIT = 0, ///< Just initialized
+    FILL = 1, ///< Filled with content
+    FREE = 2  ///< His memory is free
 } POEM_STATUS;
 
 
+/// Contains array of #String and its size
 typedef struct {
     POEM_STATUS status = INIT;
     String *lines = nullptr;
@@ -34,39 +49,44 @@ typedef struct {
 } StringParser;
 
 
-
 /**
- * \brief Sorts the poem
- * \param [out] poem Array of strings to sort
- * \param [in] size StringParser's actual size
+ * \brief Sorts the parser
+ * \param [out] lines Array of #String to sort
+ * \param [in] size array size
  * \param [in] sort Sorting function
  * \param [in] cmp Compare function
  * \return Exit code. 0 - OK, 1 - FAIL
  * \warning Function doesn't work correctly with NULL elements
 */
-int sort_poem(StringParser *poem, sort_t sort, cmp_t cmp);
+int sort_lines(String lines[], int size, sort_t sort, cmp_t cmp);
 
 
 /**
- * \brief Reads poem from the given file
- * \param [out] poem Pointer to an array of strings
+ * \brief Parse each line from file to the array
+ * \param [out] parser Pointer to an array of strings
  * \param [in] stream File for input
- * \return Number of lines read
+ * \return Exit code. 0 - OK, 1 - FAIL
  * \note New line symbol will be discarded
 */
-int read_poem(StringParser *poem, FILE *stream);
+int read_parser(StringParser *parser, FILE *stream);
 
 
 /**
  * \brief Prints array of #String to the given file
  * \param [in] lines Array of #String
  * \param [in] stream File for output
+ * \return Exit code. 0 - OK, 1 - FAIL
  * \note New line symbol will be added to the end of each line
 */
-void print_lines(String lines[], FILE *stream) ;
+int print_lines(String lines[], FILE *stream) ;
 
 
-void free_poem(StringParser *poem);
+/**
+ * \brief Free parser
+ * \param [in] parser This parser will be free
+ * \return Exit code. 0 - OK, 1 - FAIL
+*/
+int free_parser(StringParser *parser);
 
 
 /**
@@ -75,7 +95,7 @@ void free_poem(StringParser *poem);
  * \param [in] ptrB The second element to compare
  * \return Standart compare function output
  * 
- * \note This function is used in sort_poem() as compare function. 
+ * \note This function is used in sort_parser() as compare function. 
  * So it takes pointers to elements of array of strings
 */
 int front_compare(const void *ptrA, const void *ptrB);
@@ -87,7 +107,7 @@ int front_compare(const void *ptrA, const void *ptrB);
  * \param [in] ptrB The second element to compare
  * \return Standart compare function output
  * 
- * This function is used in sort_poem() as compare function. 
+ * \note This function is used in sort_parser() as compare function. 
  * So it takes pointers to elements of array of strings
 */
 int back_compare(const void *ptrA, const void *ptrB);
