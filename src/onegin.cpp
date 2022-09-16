@@ -34,11 +34,7 @@ const char *get_prev_alpha(const char *str);
 void swap(void *ptrA, void *ptrB, size_t size);
 
 
-int sort_poem(
-    StringPointer poem[], long size, 
-    void (*sort)(void *, size_t, size_t, int (*cmp)(const void *, const void*)), 
-    int (*cmp)(const void *, const void *)
-) {
+int sort_poem(StringPointer poem[], long size, sort_t sort, cmp_t cmp) {
     if (!sort) {
         fprintf(stderr, "Sort function was NULL");
         return 1;
@@ -54,10 +50,7 @@ int sort_poem(
 }
 
 
-void bubble_sort(
-    void *arr, size_t size, size_t s, 
-    int (*cmp)(const void *, const void*)
-) {
+void bubble_sort(void *arr, size_t size, size_t s, cmp_t cmp) {
     for(size_t i = 0; i < size - 1; i++) {
         for(size_t j = i + 1; j < size; j++) {
             void *ptrA = (char *) arr + j * s, *ptrB = (char *) arr + i * s;

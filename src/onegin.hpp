@@ -13,6 +13,12 @@ typedef struct {
 } StringPointer;
 
 
+typedef void (*sort_t)(void *arr, size_t size, size_t elem_size, int (*cmp)(const void *ptrA, const void*ptrB));
+
+
+typedef int (*cmp_t)(const void *ptrA, const void *ptrB);
+
+
 /**
  * \brief Sorts the poem
  * \param [out] poem Array of strings to sort
@@ -22,11 +28,7 @@ typedef struct {
  * \return Exit code. 0 - OK, 1 - FAIL
  * \warning Function doesn't work correctly with NULL elements
 */
-int sort_poem(
-    StringPointer poem[], long size, 
-    void (*sort)(void *, size_t, size_t, int (*cmp)(const void *, const void*)), 
-    int (*cmp)(const void *, const void *)
-);
+int sort_poem(StringPointer poem[], long size, sort_t sort, cmp_t cmp);
 
 
 /**
@@ -79,7 +81,4 @@ int back_compare(const void *ptrA, const void *ptrB);
  * \param [in] s Element size in bytes
  * \param [in] cmp Compare function
 */ 
-void bubble_sort(
-    void *arr, size_t size, size_t s, 
-    int (*cmp)(const void *, const void*)
-);
+void bubble_sort(void *arr, size_t size, size_t s, cmp_t cmp);

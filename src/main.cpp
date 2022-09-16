@@ -17,7 +17,7 @@ int main() {
     if (size == 0)
         return 1;
 
-    if (sort_poem(poem, size, &bubble_sort, NULL))
+    if (sort_poem(poem, size, &qsort, &front_compare))
         return 1;
 
     print_poem(poem, output);
