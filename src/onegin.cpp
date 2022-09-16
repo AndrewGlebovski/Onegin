@@ -34,7 +34,7 @@ const char *get_prev_alpha(const char *str);
 void swap(void *ptrA, void *ptrB, size_t size);
 
 
-int sort_poem(StringPointer poem[], long size, sort_t sort, cmp_t cmp) {
+int sort_poem(StringParser *poem, sort_t sort, cmp_t cmp) {
     if (!sort) {
         fprintf(stderr, "Sort function was NULL");
         return 1;
@@ -45,7 +45,7 @@ int sort_poem(StringPointer poem[], long size, sort_t sort, cmp_t cmp) {
         return 1;
     }
 
-    (*sort)(poem, size, sizeof(*poem), cmp);
+    (*sort)(poem -> lines, poem -> size, sizeof(*(poem -> lines)), cmp);
     return 0;
 }
 
@@ -63,8 +63,8 @@ void bubble_sort(void *arr, size_t size, size_t s, cmp_t cmp) {
 
 
 int front_compare(const void *ptrA, const void *ptrB) {
-    const char *a = ((StringPointer *) ptrA) -> str;
-    const char *b = ((StringPointer *) ptrB) -> str;
+    const char *a = ((String *) ptrA) -> str;
+    const char *b = ((String *) ptrB) -> str;
     
     while (1) {
         a = get_next_alpha(a);
@@ -82,8 +82,8 @@ int front_compare(const void *ptrA, const void *ptrB) {
 
 
 int back_compare(const void *ptrA, const void *ptrB) {
-    const char *a = ((StringPointer *) ptrA) -> str + ((StringPointer *) ptrA) -> len * sizeof(char); 
-    const char *b = ((StringPointer *) ptrB) -> str + ((StringPointer *) ptrB) -> len * sizeof(char);
+    const char *a = ((String *) ptrA) -> str + ((String *) ptrA) -> len * sizeof(char); 
+    const char *b = ((String *) ptrB) -> str + ((String *) ptrB) -> len * sizeof(char);
     
     while (1) {
         a = get_prev_alpha(a);

@@ -7,10 +7,10 @@
 #include "onegin.hpp"
 
 
-long read_poem(StringPointer **poem, FILE *stream) {
+int read_poem(StringParser *poem, FILE *stream) {
     if (!stream) {
         fprintf(stderr, "File pointer was null");
-        return 0;
+        return 1;
     }
 
     long lines = 0, chars = 0;
@@ -22,36 +22,63 @@ long read_poem(StringPointer **poem, FILE *stream) {
 
     rewind(stream);
 
-    *poem = (StringPointer *) calloc(lines + 1, sizeof(StringPointer));
-
     char *storage = (char *) calloc(chars, sizeof(char));
 
+    poem -> lines = (String *) calloc(lines + 1, sizeof(String));
+    poem -> text = storage;
+    poem -> status = FILL;
+
     for(int l = 0; l < lines; l++) {
-        (*poem)[l] = {storage, 0};
+        (poem -> lines)[l] = {storage, 0};
         int c = 0;
 
         while((c = fgetc(stream)) != '\n')
             *storage++ = (char) c;
 
-        (*poem)[l].len = (int)(storage - (*poem)[l].str);
+        (poem -> lines)[l].len = (int)(storage - (poem -> lines)[l].str);
         
         *storage++ = '\0';
     }
 
-    (*poem)[lines] = {nullptr, -1}; 
+    (poem -> lines)[lines] = {nullptr, -1};
+    poem -> size = lines;
 
-    return lines;
+    return 0;
 }
 
 
-void print_poem(StringPointer poem[], FILE *stream) {
+void print_lines(String lines[], FILE *stream) {
+    if (!lines) {
+        fprintf(stderr, "Lines was null");
+        return;
+    }
+
     if (!stream) {
         fprintf(stderr, "File pointer was null");
         return;
     }
 
-    for(int i = 0; poem[i].str != nullptr && poem[i].len != -1; i++) {
-        fprintf(stream, "%s\n", poem[i].str);
+    for(int i = 0; lines[i].str != nullptr && lines[i].len != -1; i++) {
+        fprintf(stream, "%s\n", lines[i].str);
         fflush(stream);
+    }
+}
+
+
+void free_poem(StringParser *poem) {
+    if (!poem) {
+        fprintf(stderr, "Poem pointer was null");
+        return;
+    }
+
+    if (poem -> status == FILL) {
+        free(poem -> text);
+        free(poem -> lines);
+        poem -> status = FREE;
+        poem -> size = 0;
+    }
+    else {
+        printf("Double free is not allowed");
+        return;
     }
 }

@@ -11,16 +11,17 @@ int main() {
     FILE *input = fopen("debug/input.txt", "r");
     FILE *output = fopen("debug/output.txt", "w");
 
-    StringPointer *poem;
-    long size = read_poem(&poem, input);
+    StringParser poem;
 
-    if (size == 0)
+    read_poem(&poem, input);
+
+    if (sort_poem(&poem, &qsort, &front_compare))
         return 1;
 
-    if (sort_poem(poem, size, &qsort, &front_compare))
-        return 1;
+    print_lines(poem.lines, output);
 
-    print_poem(poem, output);
+    free_poem(&poem);
+    free_poem(&poem);
 
     fclose(input);
     fclose(output);

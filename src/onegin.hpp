@@ -10,7 +10,7 @@
 typedef struct {
     const char *str = nullptr; ///< String
     int len = -1; ///< Strings's length
-} StringPointer;
+} String;
 
 
 typedef void (*sort_t)(void *arr, size_t size, size_t elem_size, int (*cmp)(const void *ptrA, const void*ptrB));
@@ -19,16 +19,32 @@ typedef void (*sort_t)(void *arr, size_t size, size_t elem_size, int (*cmp)(cons
 typedef int (*cmp_t)(const void *ptrA, const void *ptrB);
 
 
+typedef enum {
+    INIT = 0,
+    FILL = 1,
+    FREE = 2
+} POEM_STATUS;
+
+
+typedef struct {
+    POEM_STATUS status = INIT;
+    String *lines = nullptr;
+    char* text = nullptr;
+    long size = -1;
+} StringParser;
+
+
+
 /**
  * \brief Sorts the poem
  * \param [out] poem Array of strings to sort
- * \param [in] size Poem's actual size
+ * \param [in] size StringParser's actual size
  * \param [in] sort Sorting function
  * \param [in] cmp Compare function
  * \return Exit code. 0 - OK, 1 - FAIL
  * \warning Function doesn't work correctly with NULL elements
 */
-int sort_poem(StringPointer poem[], long size, sort_t sort, cmp_t cmp);
+int sort_poem(StringParser *poem, sort_t sort, cmp_t cmp);
 
 
 /**
@@ -38,16 +54,19 @@ int sort_poem(StringPointer poem[], long size, sort_t sort, cmp_t cmp);
  * \return Number of lines read
  * \note New line symbol will be discarded
 */
-long read_poem(StringPointer **poem, FILE *stream);
+int read_poem(StringParser *poem, FILE *stream);
 
 
 /**
- * \brief Prints poem to the given file
- * \param [in] poem Array of strings
+ * \brief Prints array of #String to the given file
+ * \param [in] lines Array of #String
  * \param [in] stream File for output
  * \note New line symbol will be added to the end of each line
 */
-void print_poem(StringPointer poem[], FILE *stream);
+void print_lines(String lines[], FILE *stream) ;
+
+
+void free_poem(StringParser *poem);
 
 
 /**
