@@ -3,6 +3,7 @@
  * \brief Main file of this program
 */
 
+#include <stdlib.h>
 #include "onegin.hpp"
 
 
@@ -16,7 +17,8 @@ int main() {
     if (size == 0)
         return 1;
 
-    sort_poem(poem, size, BUBBLE_SORT, FRONT_CMP);
+    if (sort_poem(poem, size, &bubble_sort, NULL))
+        return 1;
 
     print_poem(poem, output);
 

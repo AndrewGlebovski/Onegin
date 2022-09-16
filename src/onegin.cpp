@@ -18,35 +18,11 @@ const char *get_next_alpha(const char *str);
 
 
 /**
- * \brief Compares two strings using get_next_alpha()
- * \param [in] ptrA The first element to compare
- * \param [in] ptrB The second element to compare
- * \return Standart compare function output
- * 
- * \note This function is used in sort_poem() as compare function. 
- * So it takes pointers to elements of array of strings
-*/
-int front_compare(const void *ptrA, const void *ptrB);
-
-
-/**
  * \brief Get previous alpha symbol in string
  * \param [in] str String to search alpha in
  * \return Pointer to the first element found
 */
 const char *get_prev_alpha(const char *str);
-
-
-/**
- * \brief Compares two strings using get_prev_alpha() (comparing starts from end)
- * \param [in] ptrA The first element to compare
- * \param [in] ptrB The second element to compare
- * \return Standart compare function output
- * 
- * This function is used in sort_poem() as compare function. 
- * So it takes pointers to elements of array of strings
-*/
-int back_compare(const void *ptrA, const void *ptrB);
 
 
 /**
@@ -58,23 +34,38 @@ int back_compare(const void *ptrA, const void *ptrB);
 void swap(void *ptrA, void *ptrB, size_t size);
 
 
-/**
- * \brief Sorts an array
- * \param [in] arr Array to sort
- * \param [in] size Array size
- * \param [in] s Element size in bytes
- * \param [in] cmp Compare function
-*/ 
-void bubble_sort(void *arr, size_t size, size_t s, int (*cmp)(const void *, const void*));
-
-
-const char *get_next_alpha(const char *str) {
-    while (!isalpha(*str++)) {
-        if (*str == '\0') 
-            return str;
+int sort_poem(
+    StringPointer poem[], long size, 
+    void (*sort)(void *, size_t, size_t, int (*cmp)(const void *, const void*)), 
+    int (*cmp)(const void *, const void *)
+) {
+    if (!sort) {
+        fprintf(stderr, "Sort function was NULL");
+        return 1;
     }
-    
-    return str - 1;
+
+    if (!cmp) {
+        fprintf(stderr, "Compare function was NULL");
+        return 1;
+    }
+
+    (*sort)(poem, size, sizeof(*poem), cmp);
+    return 0;
+}
+
+
+void bubble_sort(
+    void *arr, size_t size, size_t s, 
+    int (*cmp)(const void *, const void*)
+) {
+    for(size_t i = 0; i < size - 1; i++) {
+        for(size_t j = i + 1; j < size; j++) {
+            void *ptrA = (char *) arr + j * s, *ptrB = (char *) arr + i * s;
+
+            if (cmp(ptrA, ptrB) < 0)
+                swap(ptrA, ptrB, s);
+        }
+    }
 }
 
 
@@ -97,16 +88,6 @@ int front_compare(const void *ptrA, const void *ptrB) {
 }
 
 
-const char *get_prev_alpha(const char *str) {
-    while (!isalpha(*str--)) {
-        if (*str == '\0') 
-            return str;
-    }
-    
-    return str + 1;
-}
-
-
 int back_compare(const void *ptrA, const void *ptrB) {
     const char *a = ((StringPointer *) ptrA) -> str + ((StringPointer *) ptrA) -> len * sizeof(char); 
     const char *b = ((StringPointer *) ptrB) -> str + ((StringPointer *) ptrB) -> len * sizeof(char);
@@ -126,38 +107,6 @@ int back_compare(const void *ptrA, const void *ptrB) {
 }
 
 
-void sort_poem(StringPointer poem[], long size, SORT_FUNC sort_func, SORT_MODE sort_mode) {
-    int (*cmp)(const void *, const void *) = NULL;
-    void (*sort)(void *, size_t, size_t, int (*cmp)(const void *, const void*)) = NULL;
-
-    switch(sort_mode) {
-        case FRONT_CMP:
-            cmp = &front_compare;
-            break;
-        case BACK_CMP:
-            cmp = &back_compare;
-            break;
-        default:
-            printf("Invalid sort function code");
-            return;
-    }
-
-    switch(sort_func) {
-        case BUBBLE_SORT:
-            sort = &bubble_sort;
-            break;
-        case QUICK_SORT:
-            sort = &qsort;
-            break;
-        default:
-            printf("Invalid sort function code");
-            return;
-    }
-
-    (*sort)(poem, size, sizeof(*poem), cmp);
-}
-
-
 void swap(void *ptrA, void *ptrB, size_t size) {
     char *tmp = (char *) calloc(size, sizeof(char));
     memmove(tmp, ptrA, size);
@@ -167,13 +116,21 @@ void swap(void *ptrA, void *ptrB, size_t size) {
 }
 
 
-void bubble_sort(void *arr, size_t size, size_t s, int (*cmp)(const void *, const void*)) {
-    for(size_t i = 0; i < size - 1; i++) {
-        for(size_t j = i + 1; j < size; j++) {
-            void *ptrA = (char *) arr + j * s, *ptrB = (char *) arr + i * s;
-
-            if (cmp(ptrA, ptrB) < 0)
-                swap(ptrA, ptrB, s);
-        }
+const char *get_next_alpha(const char *str) {
+    while (!isalpha(*str++)) {
+        if (*str == '\0') 
+            return str;
     }
+    
+    return str - 1;
+}
+
+
+const char *get_prev_alpha(const char *str) {
+    while (!isalpha(*str--)) {
+        if (*str == '\0') 
+            return str;
+    }
+    
+    return str + 1;
 }
