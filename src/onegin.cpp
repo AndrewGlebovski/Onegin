@@ -1,6 +1,6 @@
 /**
  * \file
- * \brief Contains sorting functions
+ * \brief Contains sorting and comparing functions
 */
 
 #include <stdlib.h>
@@ -10,19 +10,14 @@
 
 
 /**
- * \brief Get next alpha symbol in string
- * \param [in] str String to search alpha in
- * \return Pointer to the first element found
-*/
-const char *get_next_alpha(const char *str);
-
-
-/**
- * \brief Get previous alpha symbol in string
- * \param [in] str String to search alpha in
- * \return Pointer to the first element found
-*/
-const char *get_prev_alpha(const char *str);
+ * \brief Universal compare for strings
+ * \param [in] ptrA The first element to compare
+ * \param [in] sizeA The first element size
+ * \param [in] ptrB The second element to compare
+ * \param [in] sizeB The second element size
+ * \param [in] step Step of iteration
+*/ 
+int compare(const char *ptrA, int sizeA, const char *ptrB, int sizeB, const int step);
 
 
 /**
@@ -55,41 +50,41 @@ void bubble_sort(void *arr, size_t size, size_t s, cmp_t cmp) {
 }
 
 
+int compare(const char *ptrA, int sizeA, const char *ptrB, int sizeB, const int step) {
+    ASSERT(ptrA, "ptrA was NULL", return 1);
+    ASSERT(ptrB, "ptrB was NULL", return -1);
+
+    do {
+        while (!isalnum(*ptrA) && sizeA--) ptrA += step;
+        while (!isalnum(*ptrB) && sizeB--) ptrB += step;
+
+    } while (*(ptrA += step) == *(ptrB += step) && sizeA-- && sizeB--);
+
+    return *(ptrA - step) - *(ptrB - step);
+}
+
+
 int front_compare(const void *ptrA, const void *ptrB) {
-    const char *a = ((String *) ptrA) -> str;
-    const char *b = ((String *) ptrB) -> str;
-    
-    while (1) {
-        a = get_next_alpha(a);
-        b = get_next_alpha(b);
+    ASSERT(ptrA, "ptrA was NULL", return 1);
+    ASSERT(ptrB, "ptrB was NULL", return -1);
 
-        if (*a == '\0' || *b == '\0')
-            break;
-
-        if (*a++ != *b++)
-            break;
-    }
-
-    return *(a - 1) - *(b - 1);
+    return compare(
+        ((strptr_t) ptrA) -> str, ((strptr_t) ptrA) -> len * sizeof(char),
+        ((strptr_t) ptrB) -> str, ((strptr_t) ptrB) -> len * sizeof(char),
+        1
+    );
 }
 
 
 int back_compare(const void *ptrA, const void *ptrB) {
-    const char *a = ((String *) ptrA) -> str + ((String *) ptrA) -> len * sizeof(char); 
-    const char *b = ((String *) ptrB) -> str + ((String *) ptrB) -> len * sizeof(char);
-    
-    while (1) {
-        a = get_prev_alpha(a);
-        b = get_prev_alpha(b);
+    ASSERT(ptrA, "ptrA was NULL", return 1);
+    ASSERT(ptrB, "ptrB was NULL", return -1);
 
-        if (*a == '\0' || *b == '\0')
-            break;
-
-        if (*a-- != *b--)
-            break;
-    }
-
-    return *(a + 1) - *(b + 1);
+    return compare(
+        ((strptr_t) ptrA) -> str + ((strptr_t) ptrA) -> len * sizeof(char), ((strptr_t) ptrA) -> len * sizeof(char),
+        ((strptr_t) ptrB) -> str + ((strptr_t) ptrB) -> len * sizeof(char), ((strptr_t) ptrB) -> len * sizeof(char),
+        -1
+    );
 }
 
 
@@ -99,24 +94,4 @@ void swap(void *ptrA, void *ptrB, size_t size) {
     memmove(ptrA, ptrB, size);
     memmove(ptrB, tmp, size);
     free(tmp);
-}
-
-
-const char *get_next_alpha(const char *str) {
-    while (!isalpha(*str++)) {
-        if (*str == '\0') 
-            return str;
-    }
-    
-    return str - 1;
-}
-
-
-const char *get_prev_alpha(const char *str) {
-    while (!isalpha(*str--)) {
-        if (*str == '\0') 
-            return str;
-    }
-    
-    return str + 1;
 }

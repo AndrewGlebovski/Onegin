@@ -13,7 +13,7 @@ int main() {
 
     StringParser parser;
 
-    read_parser(&parser, NULL);
+    read_parser(&parser, input);
 
     sort_lines(parser.lines, parser.size, &qsort, &front_compare);
 

@@ -19,8 +19,8 @@ while(0)
 
 /// This structure contains string and its size
 typedef struct {
-    const char *str = nullptr; ///< String
-    int len = -1; ///< Strings's length
+    const char *str = nullptr; ///< Pointer
+    int len = -1; ///< Length
 } String;
 
 
@@ -30,6 +30,10 @@ typedef void (*sort_t)(void *arr, size_t size, size_t elem_size, int (*cmp)(cons
 
 /// Compare function template
 typedef int (*cmp_t)(const void *ptrA, const void *ptrB);
+
+
+/// String struct const pointer
+typedef const String * strptr_t;
 
 
 /// #StringParser possible status
@@ -42,10 +46,10 @@ typedef enum {
 
 /// Contains array of #String and its size
 typedef struct {
-    POEM_STATUS status = INIT;
-    String *lines = nullptr;
-    char* text = nullptr;
-    long size = -1;
+    POEM_STATUS status = INIT; ///< Status shows last action with poem (see #POEM_STATUS)
+    String *lines = nullptr; ///< Array of strings
+    char* text = nullptr; ///< Pointer to an array of chars
+    long size = -1; ///< Lines's size
 } StringParser;
 
 
@@ -90,7 +94,7 @@ int free_parser(StringParser *parser);
 
 
 /**
- * \brief Compares two strings using get_next_alpha()
+ * \brief Compares two strings from front
  * \param [in] ptrA The first element to compare
  * \param [in] ptrB The second element to compare
  * \return Standart compare function output
@@ -102,7 +106,7 @@ int front_compare(const void *ptrA, const void *ptrB);
 
 
 /**
- * \brief Compares two strings using get_prev_alpha() (comparing starts from end)
+ * \brief Compares two strings from back
  * \param [in] ptrA The first element to compare
  * \param [in] ptrB The second element to compare
  * \return Standart compare function output
