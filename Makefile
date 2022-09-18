@@ -23,5 +23,5 @@ run: $(BIN_DIR)/main.o $(BIN_DIR)/onegin.o $(BIN_DIR)/io.o $(BIN_DIR)/parser.o
 
 
 # Компилирует все файлы в папке src в папку bin
-$(BIN_DIR)/%.o: $(SRC_DIR)/%.cpp $(SRC_DIR)/onegin.hpp $(SRC_DIR)/macros.hpp $(SRC_DIR)/parser.hpp
+$(BIN_DIR)/%.o: $(SRC_DIR)/%.cpp $(SRC_DIR)/onegin.hpp $(SRC_DIR)/macros.hpp $(SRC_DIR)/parser.hpp $(SRC_DIR)/error.hpp
 	$(COMPILER) $(FLAGS) -c $< -o $@
