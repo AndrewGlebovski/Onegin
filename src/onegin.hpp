@@ -4,7 +4,6 @@
 */
 
 #include "logs.hpp"
-#include "error.hpp"
 
 
 /// This structure contains string and its size

@@ -6,7 +6,6 @@
 #include <string.h>
 #include "logs.hpp"
 #include "parser.hpp"
-#include "error.hpp"
 
 
 void set_input_stream(char *argv[], void *data); ///< -i parser
