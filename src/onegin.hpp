@@ -3,17 +3,6 @@
  * \brief It's a header file
 */
 
-
-#define ASSERT(condition, msg, action) \
-do \
-    if (!(condition)) { \
-        printf("%s | %s in function %s in line %d\n", \
-        msg, __FILE__, __PRETTY_FUNCTION__, __LINE__); \
-        action; \
-    } \
-while(0)
-
-
 #include <stdio.h>
 
 
@@ -123,5 +112,5 @@ int back_compare(const void *ptrA, const void *ptrB);
  * \param [in] size Array size
  * \param [in] s Element size in bytes
  * \param [in] cmp Compare function
-*/ 
+*/
 void bubble_sort(void *arr, size_t size, size_t s, cmp_t cmp);

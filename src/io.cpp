@@ -4,6 +4,7 @@
 */
 
 #include <stdlib.h>
+#include "macros.hpp"
 #include "onegin.hpp"
 
 

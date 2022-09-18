@@ -18,10 +18,10 @@ all: run
 
 
 # Объединяет объекты в исполняемый файл
-run: $(BIN_DIR)/main.o $(BIN_DIR)/onegin.o $(BIN_DIR)/io.o
+run: $(BIN_DIR)/main.o $(BIN_DIR)/onegin.o $(BIN_DIR)/io.o $(BIN_DIR)/parser.o
 	$(COMPILER) $^ -o run.exe
 
 
 # Компилирует все файлы в папке src в папку bin
-$(BIN_DIR)/%.o: $(SRC_DIR)/%.cpp $(SRC_DIR)/onegin.hpp
+$(BIN_DIR)/%.o: $(SRC_DIR)/%.cpp $(SRC_DIR)/onegin.hpp $(SRC_DIR)/macros.hpp $(SRC_DIR)/parser.hpp
 	$(COMPILER) $(FLAGS) -c $< -o $@

@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <string.h>
+#include "macros.hpp"
 #include "onegin.hpp"
 
 
