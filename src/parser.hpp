@@ -3,14 +3,12 @@
  * \brief It's a command line arguments parser header
 */
 
-#include <string.h>
-#include "macros.hpp"
-
 
 /**
  * \brief Parses arguments
  * \param [in] argc Number of arguments
  * \param [in] argv Array of arguments
+ * \return Exit code
 */
 int parse(int argc, char* argv[]);
 

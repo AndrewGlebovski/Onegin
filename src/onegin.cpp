@@ -8,6 +8,7 @@
 #include <string.h>
 #include "macros.hpp"
 #include "onegin.hpp"
+#include "error.hpp"
 
 
 /**
@@ -31,11 +32,11 @@ void swap(void *ptrA, void *ptrB, size_t size);
 
 
 int sort_lines(String lines[], int size, sort_t sort, cmp_t cmp) {
-    ASSERT(sort, "Sort function was NULL", return 1);
-    ASSERT(cmp, "Compare function was NULL", return 1);
+    ASSERT(sort, "Sort function was NULL", return INVALID_ARGUMENT);
+    ASSERT(cmp, "Compare function was NULL", return INVALID_ARGUMENT);
 
     (*sort)(lines, size, sizeof(*lines), cmp);
-    return 0;
+    return OK;
 }
 
 
@@ -90,6 +91,10 @@ int back_compare(const void *ptrA, const void *ptrB) {
 
 
 void swap(void *ptrA, void *ptrB, size_t size) {
+    ASSERT(ptrA, "ptrA was NULL", return);
+    ASSERT(ptrB, "ptrB was NULL", return);
+    ASSERT(size > 0, "size was not correct", return);
+
     char *tmp = (char *) calloc(size, sizeof(char));
     memmove(tmp, ptrA, size);
     memmove(ptrA, ptrB, size);

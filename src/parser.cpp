@@ -3,7 +3,10 @@
  * \brief Contains command line arguments parser
 */
 
+#include <string.h>
+#include "macros.hpp"
 #include "parser.hpp"
+#include "error.hpp"
 
 
 void set_input_stream(char *argv[], void *data); ///< -i parser
@@ -39,12 +42,15 @@ Command command_list[] = {
 		0, 
 		&show_help, 
 		nullptr,
-		"Prints all commands description"
+		"Prints all commands descriptions"
 	},
 };
 
 
 int parse(int argc, char* argv[]) {
+	ASSERT(argc, "argc was 0", return INVALID_ARGUMENT);
+	ASSERT(argv, "argv was NULL", return INVALID_ARGUMENT);
+
 	for(int j = 0; j < argc; j++) {
 		int n = sizeof(command_list) / sizeof(Command);
 		for(int i = 0; i < n; i++) {
@@ -53,7 +59,7 @@ int parse(int argc, char* argv[]) {
 		}
 	}
 
-	return 0;
+	return OK;
 }
 
 
