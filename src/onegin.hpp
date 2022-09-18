@@ -3,7 +3,8 @@
  * \brief It's a header file
 */
 
-#include <stdio.h>
+#include "logs.hpp"
+#include "error.hpp"
 
 
 /// This structure contains string and its size
@@ -78,6 +79,7 @@ int print_lines(String lines[], FILE *stream) ;
  * \brief Free parser
  * \param [in] parser This parser will be free
  * \return Exit code. 0 - OK, 1 - FAIL
+ * \warning If some pointer is null, nothing will be free
 */
 int free_parser(StringParser *parser);
 

@@ -4,7 +4,7 @@
 */
 
 #include <string.h>
-#include "macros.hpp"
+#include "logs.hpp"
 #include "parser.hpp"
 #include "error.hpp"
 
@@ -48,8 +48,8 @@ Command command_list[] = {
 
 
 int parse(int argc, char* argv[]) {
-	ASSERT(argc, "argc was 0", return INVALID_ARGUMENT);
-	ASSERT(argv, "argv was NULL", return INVALID_ARGUMENT);
+	ASSERT(argc, INVALID_ARGUMENT, "argc was 0", return INVALID_ARGUMENT);
+	ASSERT(argv, INVALID_ARGUMENT, "argv was NULL", return INVALID_ARGUMENT);
 
 	for(int j = 0; j < argc; j++) {
 		int n = sizeof(command_list) / sizeof(Command);
@@ -65,46 +65,46 @@ int parse(int argc, char* argv[]) {
 
 
 void set_input_stream(char *argv[], void *data) {
-	ASSERT(argv, "argv was NULL", return);
-	ASSERT(data, "data was NULL", return);
+	ASSERT(argv, INVALID_ARGUMENT, "argv was NULL", return);
+	ASSERT(data, INVALID_ARGUMENT, "data was NULL", return);
 
 	if (*(++argv)) {
-		ASSERT(fopen(*argv, "r"), "Can't open file, argument ignored", return);
+		ASSERT(fopen(*argv, "r"), FILE_NOT_FOUND, "Can't open file, argument ignored", return);
 
 		*((FILE **) data) = fopen(*argv, "r");
 	}
 	else {
-		ASSERT(0, "No filename after argument, argument ignored", return);
+		ASSERT(0, INVALID_COMMAND, "No filename after argument, argument ignored", return);
 	}
 }
 
 
 void set_output_stream(char *argv[], void *data) {
-	ASSERT(argv, "argv was NULL", return);
-	ASSERT(data, "data was NULL", return);
+	ASSERT(argv, INVALID_ARGUMENT, "argv was NULL", return);
+	ASSERT(data, INVALID_ARGUMENT, "data was NULL", return);
 
 	if (*(++argv)) {
-		ASSERT(fopen(*argv, "w"), "Can't open file, argument ignored", return);
+		ASSERT(fopen(*argv, "w"), FILE_NOT_FOUND, "Can't open file, argument ignored", return);
 
 		*((FILE **) data) = fopen(*argv, "w");
 	}
 	else {
-		ASSERT(0, "No filename after argument, argument ignored", return);
+		ASSERT(0, INVALID_COMMAND, "No filename after argument, argument ignored", return);
 	}
 }
 
 
 void set_compare_direction(char *argv[], void *data) {
-	ASSERT(argv, "argv was NULL", return);
-	ASSERT(data, "data was NULL", return);
+	ASSERT(argv, INVALID_ARGUMENT, "argv was NULL", return);
+	ASSERT(data, INVALID_ARGUMENT, "data was NULL", return);
 
 	if (*(++argv)) {
-		ASSERT(!strcmp(*argv, "0") || !strcmp(*argv, "1"), "Invalid mode, argument ignored", return);
+		ASSERT(!strcmp(*argv, "0") || !strcmp(*argv, "1"), INVALID_COMMAND, "Invalid mode, argument ignored", return);
 
 		*((int *) data) = **(argv) - (int) '0';
 	}
 	else {
-		ASSERT(0, "No mode after argument, argument ignored", return);
+		ASSERT(0, INVALID_COMMAND, "No mode after argument, argument ignored", return);
 	}
 }
 

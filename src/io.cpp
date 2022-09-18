@@ -4,14 +4,12 @@
 */
 
 #include <stdlib.h>
-#include "macros.hpp"
 #include "onegin.hpp"
-#include "error.hpp"
 
 
 int read_parser(StringParser *parser, FILE *stream) {
-    ASSERT(parser, "StringParser was NULL", return INVALID_ARGUMENT);
-    ASSERT(stream, "File was NULL", return INVALID_ARGUMENT);
+    ASSERT_AND_LOG(parser, INVALID_ARGUMENT, "StringParser was NULL", return INVALID_ARGUMENT);
+    ASSERT_AND_LOG(stream, INVALID_ARGUMENT, "File was NULL", return INVALID_ARGUMENT);
 
     long lines = 0, chars = 0;
     char line[100];
@@ -28,8 +26,8 @@ int read_parser(StringParser *parser, FILE *stream) {
     parser -> text = storage;
     parser -> status = FILL;
 
-    ASSERT(parser -> lines, "Not enough memory for lines", return ALLOCATE_FAIL);
-    ASSERT(parser -> text, "Not enough memory for text", return ALLOCATE_FAIL);
+    ASSERT_AND_LOG(parser -> lines, ALLOCATE_FAIL, "Not enough memory for lines", return ALLOCATE_FAIL);
+    ASSERT_AND_LOG(parser -> text, ALLOCATE_FAIL, "Not enough memory for text", return ALLOCATE_FAIL);
 
     for(int l = 0; l < lines; l++) {
         (parser -> lines)[l] = {storage, 0};
@@ -51,8 +49,8 @@ int read_parser(StringParser *parser, FILE *stream) {
 
 
 int print_lines(String lines[], FILE *stream) {
-    ASSERT(lines, "Lines was null", return INVALID_ARGUMENT);
-    ASSERT(stream, "File was NULL", return INVALID_ARGUMENT);
+    ASSERT_AND_LOG(lines, INVALID_ARGUMENT, "Lines was null", return INVALID_ARGUMENT);
+    ASSERT_AND_LOG(stream, INVALID_ARGUMENT, "File was NULL", return INVALID_ARGUMENT);
 
     for(int i = 0; lines[i].str != nullptr && lines[i].len != -1; i++) {
         fprintf(stream, "%s\n", lines[i].str);
@@ -64,10 +62,10 @@ int print_lines(String lines[], FILE *stream) {
 
 
 int free_parser(StringParser *parser) {
-    ASSERT(parser, "StringParser was NULL", return INVALID_ARGUMENT);
-    ASSERT(parser -> status == FILL, "Double free is not allowed", return INVALID_ARGUMENT);
-    ASSERT(parser -> text != nullptr, "Text was NULL", return INVALID_ARGUMENT);
-    ASSERT(parser -> lines != nullptr, "Lines was NULL", return INVALID_ARGUMENT);
+    ASSERT_AND_LOG(parser, INVALID_ARGUMENT, "StringParser was NULL", return INVALID_ARGUMENT);
+    ASSERT_AND_LOG(parser -> status == FILL, INVALID_ARGUMENT, "Double free is not allowed", return INVALID_ARGUMENT);
+    ASSERT_AND_LOG(parser -> text, INVALID_ARGUMENT, "Text was NULL", return INVALID_ARGUMENT);
+    ASSERT_AND_LOG(parser -> lines, INVALID_ARGUMENT, "Lines was NULL", return INVALID_ARGUMENT);
 
     free(parser -> text);
     free(parser -> lines);

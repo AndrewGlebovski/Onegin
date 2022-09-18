@@ -6,9 +6,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <string.h>
-#include "macros.hpp"
 #include "onegin.hpp"
-#include "error.hpp"
 
 
 /**
@@ -32,8 +30,8 @@ void swap(void *ptrA, void *ptrB, size_t size);
 
 
 int sort_lines(String lines[], int size, sort_t sort, cmp_t cmp) {
-    ASSERT(sort, "Sort function was NULL", return INVALID_ARGUMENT);
-    ASSERT(cmp, "Compare function was NULL", return INVALID_ARGUMENT);
+    ASSERT_AND_LOG(sort, INVALID_ARGUMENT, "Sort function was NULL", return INVALID_ARGUMENT);
+    ASSERT_AND_LOG(cmp, INVALID_ARGUMENT, "Compare function was NULL", return INVALID_ARGUMENT);
 
     (*sort)(lines, size, sizeof(*lines), cmp);
     return OK;
@@ -53,8 +51,8 @@ void bubble_sort(void *arr, size_t size, size_t s, cmp_t cmp) {
 
 
 int compare(const char *ptrA, int sizeA, const char *ptrB, int sizeB, const int step) {
-    ASSERT(ptrA, "ptrA was NULL", return 1);
-    ASSERT(ptrB, "ptrB was NULL", return -1);
+    ASSERT(ptrA, OK, "ptrA was NULL", return 1);
+    ASSERT(ptrB, OK, "ptrB was NULL", return -1);
 
     do {
         while (!isalnum(*ptrA) && sizeA--) ptrA += step;
@@ -67,8 +65,8 @@ int compare(const char *ptrA, int sizeA, const char *ptrB, int sizeB, const int 
 
 
 int front_compare(const void *ptrA, const void *ptrB) {
-    ASSERT(ptrA, "ptrA was NULL", return 1);
-    ASSERT(ptrB, "ptrB was NULL", return -1);
+    ASSERT(ptrA, OK, "ptrA was NULL", return 1);
+    ASSERT(ptrB, OK, "ptrB was NULL", return -1);
 
     return compare(
         ((strptr_t) ptrA) -> str, ((strptr_t) ptrA) -> len * sizeof(char),
@@ -79,8 +77,8 @@ int front_compare(const void *ptrA, const void *ptrB) {
 
 
 int back_compare(const void *ptrA, const void *ptrB) {
-    ASSERT(ptrA, "ptrA was NULL", return 1);
-    ASSERT(ptrB, "ptrB was NULL", return -1);
+    ASSERT(ptrA, OK, "ptrA was NULL", return 1);
+    ASSERT(ptrB, OK, "ptrB was NULL", return -1);
 
     return compare(
         ((strptr_t) ptrA) -> str + ((strptr_t) ptrA) -> len * sizeof(char), ((strptr_t) ptrA) -> len * sizeof(char),
@@ -91,9 +89,9 @@ int back_compare(const void *ptrA, const void *ptrB) {
 
 
 void swap(void *ptrA, void *ptrB, size_t size) {
-    ASSERT(ptrA, "ptrA was NULL", return);
-    ASSERT(ptrB, "ptrB was NULL", return);
-    ASSERT(size > 0, "size was not correct", return);
+    ASSERT_AND_LOG(ptrA, INVALID_ARGUMENT, "ptrA was NULL", return);
+    ASSERT_AND_LOG(ptrB, INVALID_ARGUMENT, "ptrB was NULL", return);
+    ASSERT_AND_LOG(size > 0, INVALID_ARGUMENT, "size was not correct", return);
 
     char *tmp = (char *) calloc(size, sizeof(char));
     memmove(tmp, ptrA, size);
