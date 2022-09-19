@@ -7,8 +7,8 @@
 #include "onegin.hpp"
 
 
-int read_parser(StringParser *parser, FILE *stream) {
-    ASSERT_AND_LOG(parser, INVALID_ARGUMENT, "StringParser was NULL", return INVALID_ARGUMENT);
+int read_parser(StringViewer *parser, FILE *stream) {
+    ASSERT_AND_LOG(parser, INVALID_ARGUMENT, "StringViewer was NULL", return INVALID_ARGUMENT);
     ASSERT_AND_LOG(stream, INVALID_ARGUMENT, "File was NULL", return INVALID_ARGUMENT);
 
     long lines = 0, chars = 0;
@@ -61,8 +61,8 @@ int print_lines(String lines[], FILE *stream) {
 }
 
 
-int free_parser(StringParser *parser) {
-    ASSERT_AND_LOG(parser, INVALID_ARGUMENT, "StringParser was NULL", return INVALID_ARGUMENT);
+int free_parser(StringViewer *parser) {
+    ASSERT_AND_LOG(parser, INVALID_ARGUMENT, "StringViewer was NULL", return INVALID_ARGUMENT);
     ASSERT_AND_LOG(parser -> status == FILL, INVALID_ARGUMENT, "Double free is not allowed", return INVALID_ARGUMENT);
     ASSERT_AND_LOG(parser -> text, INVALID_ARGUMENT, "Text was NULL", return INVALID_ARGUMENT);
     ASSERT_AND_LOG(parser -> lines, INVALID_ARGUMENT, "Lines was NULL", return INVALID_ARGUMENT);

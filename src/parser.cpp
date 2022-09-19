@@ -46,7 +46,7 @@ Command command_list[] = {
 };
 
 
-int parse(int argc, char* argv[]) {
+int parse_args(int argc, char* argv[]) {
 	ASSERT(argc, INVALID_ARGUMENT, "argc was 0", return INVALID_ARGUMENT);
 	ASSERT(argv, INVALID_ARGUMENT, "argv was NULL", return INVALID_ARGUMENT);
 

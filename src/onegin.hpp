@@ -25,7 +25,7 @@ typedef int (*cmp_t)(const void *ptrA, const void *ptrB);
 typedef const String * strptr_t;
 
 
-/// #StringParser possible status
+/// #StringViewer possible status
 typedef enum {
     INIT = 0, ///< Just initialized
     FILL = 1, ///< Filled with content
@@ -39,7 +39,7 @@ typedef struct {
     String *lines = nullptr; ///< Array of strings
     char* text = nullptr; ///< Pointer to an array of chars
     long size = -1; ///< Lines's size
-} StringParser;
+} StringViewer;
 
 
 /**
@@ -61,7 +61,7 @@ int sort_lines(String lines[], int size, sort_t sort, cmp_t cmp);
  * \return Exit code. 0 - OK, 1 - FAIL
  * \note New line symbol will be discarded
 */
-int read_parser(StringParser *parser, FILE *stream);
+int read_parser(StringViewer *parser, FILE *stream);
 
 
 /**
@@ -80,7 +80,7 @@ int print_lines(String lines[], FILE *stream) ;
  * \return Exit code. 0 - OK, 1 - FAIL
  * \warning If some pointer is null, nothing will be free
 */
-int free_parser(StringParser *parser);
+int free_parser(StringViewer *parser);
 
 
 /**

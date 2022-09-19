@@ -8,21 +8,28 @@
 #include "parser.hpp"
 
 
+
 int main(int argc, char *argv[]) {
-    FILE *input = nullptr;
+    FILE *input = fopen("debug/input.txt", "r");
     FILE *output = fopen("debug/output.txt", "w");
-    int cmp_mode = 0;
+    
+    enum CMP_MODE{
+        FORWARD  = 0,
+        BACKWARD = 1
+    };
+    
+    int cmp_mode = FORWARD;
 
     command_list[0].data = &input;
     command_list[1].data = &output;
     command_list[2].data = &cmp_mode;
-    parse(argc, argv);
+    parse_args(argc, argv);
 
-    StringParser parser;
+    StringViewer parser;
 
     read_parser(&parser, input);
 
-    if (cmp_mode)
+    if (cmp_mode == BACKWARD)
         sort_lines(parser.lines, parser.size, &qsort, &back_compare);
     else
         sort_lines(parser.lines, parser.size, &qsort, &front_compare);

@@ -10,7 +10,7 @@
  * \param [in] argv Array of arguments
  * \return Exit code
 */
-int parse(int argc, char* argv[]);
+int parse_args(int argc, char* argv[]);
 
 
 /// Contains information about command
