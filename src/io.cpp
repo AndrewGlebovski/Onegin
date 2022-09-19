@@ -7,6 +7,11 @@
 #include "onegin.hpp"
 
 
+/**
+ * \brief Returns file size in bytes
+ * \param [in] stream File
+ * \return Size in bytes
+*/
 size_t get_file_size(FILE *stream);
 
 

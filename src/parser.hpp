@@ -8,7 +8,7 @@
  * \brief Parses arguments
  * \param [in] argc Number of arguments
  * \param [in] argv Array of arguments
- * \return Exit code
+ * \return See #EXIT_CODE
 */
 int parse_args(int argc, char* argv[]);
 
