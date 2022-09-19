@@ -56,12 +56,12 @@ int sort_lines(String lines[], int size, sort_t sort, cmp_t cmp);
 
 /**
  * \brief Parse each line from file to the array
- * \param [out] parser Pointer to an array of strings
+ * \param [out] viewer Pointer to an array of strings
  * \param [in] stream File for input
  * \return Exit code. 0 - OK, 1 - FAIL
  * \note New line symbol will be discarded
 */
-int read_parser(StringViewer *parser, FILE *stream);
+int read_viewer(StringViewer *viewer, FILE *stream);
 
 
 /**
@@ -75,12 +75,12 @@ int print_lines(String lines[], FILE *stream) ;
 
 
 /**
- * \brief Free parser
- * \param [in] parser This parser will be free
+ * \brief Free viewer
+ * \param [in] viewer It will be free
  * \return Exit code. 0 - OK, 1 - FAIL
  * \warning If some pointer is null, nothing will be free
 */
-int free_parser(StringViewer *parser);
+int free_viewer(StringViewer *viewer);
 
 
 /**

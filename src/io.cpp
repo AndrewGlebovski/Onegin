@@ -7,44 +7,62 @@
 #include "onegin.hpp"
 
 
-int read_parser(StringViewer *parser, FILE *stream) {
-    ASSERT_AND_LOG(parser, INVALID_ARGUMENT, "StringViewer was NULL", return INVALID_ARGUMENT);
+size_t get_file_size(FILE *stream);
+
+
+int read_viewer(StringViewer *viewer, FILE *stream) {
+    ASSERT_AND_LOG(viewer, INVALID_ARGUMENT, "StringViewer was NULL", return INVALID_ARGUMENT);
     ASSERT_AND_LOG(stream, INVALID_ARGUMENT, "File was NULL", return INVALID_ARGUMENT);
 
-    long lines = 0, chars = 0;
-    char line[100];
-    while(fgets(line, 1000, stream) != NULL) 
-        lines++;
+    size_t size = get_file_size(stream);
 
-    chars = ftell(stream);
+    char *storage = (char *) calloc(size, sizeof(char));
 
-    rewind(stream);
+    viewer -> text = storage;
 
-    char *storage = (char *) calloc(chars, sizeof(char));
+    ASSERT_AND_LOG(viewer -> text, ALLOCATE_FAIL, "Not enough memory for text", return ALLOCATE_FAIL);
 
-    parser -> lines = (String *) calloc(lines + 1, sizeof(String));
-    parser -> text = storage;
-    parser -> status = FILL;
+    int lines = 0;
 
-    ASSERT_AND_LOG(parser -> lines, ALLOCATE_FAIL, "Not enough memory for lines", return ALLOCATE_FAIL);
-    ASSERT_AND_LOG(parser -> text, ALLOCATE_FAIL, "Not enough memory for text", return ALLOCATE_FAIL);
+    size = fread(storage, sizeof(char), size, stream);
+    storage = (char *) realloc(storage, size);
 
-    for(int l = 0; l < lines; l++) {
-        (parser -> lines)[l] = {storage, 0};
-        int c = 0;
-
-        while((c = fgetc(stream)) != '\n')
-            *storage++ = (char) c;
-
-        (parser -> lines)[l].len = (int)(storage - (parser -> lines)[l].str);
-        
-        *storage++ = '\0';
+    for(size_t i = 0; i < size; i++) {
+        if (storage[i] == '\n') {
+            storage[i] = '\0';
+            lines++;
+        }
     }
 
-    (parser -> lines)[lines] = {nullptr, -1};
-    parser -> size = lines;
+    viewer -> lines = (String *) calloc(lines + 1, sizeof(String));
+
+    ASSERT_AND_LOG(viewer -> lines, ALLOCATE_FAIL, "Not enough memory for lines", return ALLOCATE_FAIL);
+
+    for(int l = 0; l < lines; l++) {
+        (viewer -> lines)[l] = {storage, 0};
+
+        while(*storage != '\0')
+            storage++;
+
+        (viewer -> lines)[l].len = (int)(storage - (viewer -> lines)[l].str);
+
+        storage++;
+    }
+
+    (viewer -> lines)[lines] = {nullptr, -1};
+    viewer -> size = lines;
+
+    viewer -> status = FILL;
 
     return OK;
+}
+
+
+size_t get_file_size(FILE *stream) {
+    fseek(stream, 0, SEEK_END);
+    size_t size = ftell(stream);
+    rewind(stream);
+    return size;
 }
 
 
@@ -61,17 +79,17 @@ int print_lines(String lines[], FILE *stream) {
 }
 
 
-int free_parser(StringViewer *parser) {
-    ASSERT_AND_LOG(parser, INVALID_ARGUMENT, "StringViewer was NULL", return INVALID_ARGUMENT);
-    ASSERT_AND_LOG(parser -> status == FILL, INVALID_ARGUMENT, "Double free is not allowed", return INVALID_ARGUMENT);
-    ASSERT_AND_LOG(parser -> text, INVALID_ARGUMENT, "Text was NULL", return INVALID_ARGUMENT);
-    ASSERT_AND_LOG(parser -> lines, INVALID_ARGUMENT, "Lines was NULL", return INVALID_ARGUMENT);
+int free_viewer(StringViewer *viewer) {
+    ASSERT_AND_LOG(viewer, INVALID_ARGUMENT, "StringViewer was NULL", return INVALID_ARGUMENT);
+    ASSERT_AND_LOG(viewer -> status == FILL, INVALID_ARGUMENT, "Double free is not allowed", return INVALID_ARGUMENT);
+    ASSERT_AND_LOG(viewer -> text, INVALID_ARGUMENT, "Text was NULL", return INVALID_ARGUMENT);
+    ASSERT_AND_LOG(viewer -> lines, INVALID_ARGUMENT, "Lines was NULL", return INVALID_ARGUMENT);
 
-    free(parser -> text);
-    free(parser -> lines);
+    free(viewer -> text);
+    free(viewer -> lines);
 
-    parser -> status = FREE;
-    parser -> size = 0;
+    viewer -> status = FREE;
+    viewer -> size = 0;
 
     return OK;
 }

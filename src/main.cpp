@@ -25,18 +25,18 @@ int main(int argc, char *argv[]) {
     command_list[2].data = &cmp_mode;
     parse_args(argc, argv);
 
-    StringViewer parser;
+    StringViewer viewer;
 
-    read_parser(&parser, input);
+    read_viewer(&viewer, input);
 
     if (cmp_mode == BACKWARD)
-        sort_lines(parser.lines, parser.size, &qsort, &back_compare);
+        sort_lines(viewer.lines, viewer.size, &qsort, &back_compare);
     else
-        sort_lines(parser.lines, parser.size, &qsort, &front_compare);
+        sort_lines(viewer.lines, viewer.size, &qsort, &front_compare);
 
-    print_lines(parser.lines, output);
+    print_lines(viewer.lines, output);
 
-    free_parser(&parser);
+    free_viewer(&viewer);
 
     fclose(input);
     fclose(output);
