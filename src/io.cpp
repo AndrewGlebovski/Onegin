@@ -17,11 +17,11 @@ size_t get_file_size(FILE *stream);
 
 int read_viewer(StringViewer *viewer, FILE *stream) {
     ASSERT_AND_LOG(viewer, INVALID_ARGUMENT, "StringViewer was NULL", return INVALID_ARGUMENT);
-    ASSERT_AND_LOG(stream, INVALID_ARGUMENT, "File was NULL", return INVALID_ARGUMENT);
+    ASSERT_AND_LOG(stream, INVALID_ARGUMENT, "File was NULL",         return INVALID_ARGUMENT);
 
     size_t size = get_file_size(stream);
 
-    char *storage = (char *) calloc(size, sizeof(char));
+    char *storage = (char *) calloc(size + 1, sizeof(char));
     ASSERT_AND_LOG(storage, ALLOCATE_FAIL, "Not enough memory for text", return ALLOCATE_FAIL);
 
     ASSERT_AND_LOG(!setvbuf(stream, NULL, _IOFBF, size), BUFFER_ERROR, "Set buffer to file size returns error", free(storage); viewer -> status = FREE; return BUFFER_ERROR);
@@ -31,11 +31,12 @@ int read_viewer(StringViewer *viewer, FILE *stream) {
 
     ASSERT_AND_LOG(!setvbuf(stream, NULL, _IONBF, 0), BUFFER_ERROR, "Set buffer 0 returns error", free(storage); viewer -> status = FREE; return BUFFER_ERROR);
 
-    storage = (char *) realloc(storage, size);
+    storage = (char *) realloc(storage, size + 1);
     ASSERT_AND_LOG(storage, ALLOCATE_FAIL, "Reallocate text fail", return ALLOCATE_FAIL);
 
-    int lines = 0;
+    int lines = 1;
 
+    storage[size] = '\0';
     for(size_t i = 0; i < size; i++) {
         if (storage[i] == '\n') {
             storage[i] = '\0';
