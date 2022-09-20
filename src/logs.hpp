@@ -13,7 +13,8 @@ typedef enum {
     FILE_NOT_FOUND   = 2, ///< Couldn't open this file
     ALLOCATE_FAIL    = 3, ///< Allocate memory function returns NULL
     INVALID_COMMAND  = 4, ///< Invalid command argument passed to run.exe
-    FILE_READ_ERROR  = 5  ///< Error after reading file
+    FILE_READ_ERROR  = 5, ///< Error after reading file
+    BUFFER_ERROR     = 6  ///< setvbuf returns error
 } EXIT_CODE;
 
 

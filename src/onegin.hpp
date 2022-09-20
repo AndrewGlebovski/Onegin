@@ -88,9 +88,6 @@ int free_viewer(StringViewer *viewer);
  * \param [in] ptrA The first element to compare
  * \param [in] ptrB The second element to compare
  * \return Standart compare function output
- * 
- * \note This function is used in sort_parser() as compare function. 
- * So it takes pointers to elements of array of strings
 */
 int front_compare(const void *ptrA, const void *ptrB);
 
@@ -100,9 +97,6 @@ int front_compare(const void *ptrA, const void *ptrB);
  * \param [in] ptrA The first element to compare
  * \param [in] ptrB The second element to compare
  * \return Standart compare function output
- * 
- * \note This function is used in sort_parser() as compare function. 
- * So it takes pointers to elements of array of strings
 */
 int back_compare(const void *ptrA, const void *ptrB);
 

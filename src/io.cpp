@@ -26,10 +26,13 @@ int read_viewer(StringViewer *viewer, FILE *stream) {
 
     int lines = 0;
 
+    ASSERT_AND_LOG(!setvbuf(stream, NULL, _IOFBF, size), BUFFER_ERROR, "Set buffer to file size returns error", free(storage); viewer -> status = FREE; return BUFFER_ERROR);
     size = fread(storage, sizeof(char), size, stream);
     ASSERT_AND_LOG(!ferror(stream), FILE_READ_ERROR, "Error while reading file", free(storage); viewer -> status = FREE; return FILE_READ_ERROR);
+    ASSERT_AND_LOG(!setvbuf(stream, NULL, _IONBF, 0), BUFFER_ERROR, "Set buffer 0 returns error", free(storage); viewer -> status = FREE; return BUFFER_ERROR);
 
     storage = (char *) realloc(storage, size);
+    ASSERT_AND_LOG(storage, ALLOCATE_FAIL, "Reallocate text fail", return ALLOCATE_FAIL);
 
     for(size_t i = 0; i < size; i++) {
         if (storage[i] == '\n') {
