@@ -22,14 +22,13 @@ int read_viewer(StringViewer *viewer, FILE *stream) {
     size_t size = get_file_size(stream);
 
     char *storage = (char *) calloc(size, sizeof(char));
-
-    viewer -> text = storage;
-
-    ASSERT_AND_LOG(viewer -> text, ALLOCATE_FAIL, "Not enough memory for text", return ALLOCATE_FAIL);
+    ASSERT_AND_LOG(storage, ALLOCATE_FAIL, "Not enough memory for text", return ALLOCATE_FAIL);
 
     int lines = 0;
 
     size = fread(storage, sizeof(char), size, stream);
+    ASSERT_AND_LOG(!ferror(stream), FILE_READ_ERROR, "Error while reading file", free(storage); viewer -> status = FREE; return FILE_READ_ERROR);
+
     storage = (char *) realloc(storage, size);
 
     for(size_t i = 0; i < size; i++) {
@@ -41,7 +40,9 @@ int read_viewer(StringViewer *viewer, FILE *stream) {
 
     viewer -> lines = (String *) calloc(lines + 1, sizeof(String));
 
-    ASSERT_AND_LOG(viewer -> lines, ALLOCATE_FAIL, "Not enough memory for lines", return ALLOCATE_FAIL);
+    ASSERT_AND_LOG(viewer -> lines, ALLOCATE_FAIL, "Not enough memory for lines", free(storage); viewer -> status = FREE; return ALLOCATE_FAIL);
+
+    viewer -> text = storage;
 
     for(int l = 0; l < lines; l++) {
         (viewer -> lines)[l] = {storage, 0};

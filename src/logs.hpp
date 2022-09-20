@@ -12,7 +12,8 @@ typedef enum {
     INVALID_ARGUMENT = 1, ///< Invalid argument passed to function
     FILE_NOT_FOUND   = 2, ///< Couldn't open this file
     ALLOCATE_FAIL    = 3, ///< Allocate memory function returns NULL
-    INVALID_COMMAND  = 4  ///< Invalid command argument passed to run.exe
+    INVALID_COMMAND  = 4, ///< Invalid command argument passed to run.exe
+    FILE_READ_ERROR  = 5  ///< Error after reading file
 } EXIT_CODE;
 
 
