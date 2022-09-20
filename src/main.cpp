@@ -25,7 +25,7 @@ int main(int argc, char *argv[]) {
     command_list[2].data = &cmp_dir;
     parse_args(argc, argv);
 
-    StringViewer viewer;
+    StringViewer viewer = {};
 
     read_viewer(&viewer, input);
 
@@ -40,6 +40,7 @@ int main(int argc, char *argv[]) {
 
     fclose(input);
     fclose(output);
+    fclose(LOG_FILE);
 
     return 0;
 }
