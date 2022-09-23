@@ -17,7 +17,7 @@ size_t get_file_size(FILE *stream);
 
 /**
  * \brief Replaces specific character in string 
- * \param [out] buffer Array to change
+ * \param [out] buffer Char array to change
  * \param [in] old_char This symbol will be replaced
  * \param [in] new_char This symbol will be set
  * \return Count of replacement
@@ -25,26 +25,28 @@ size_t get_file_size(FILE *stream);
 int replace_in_buffer(char *buffer, const char old_char, const char new_char);
 
 
+/**
+ * \brief Reads file into buffer
+ * \param [in] stream File to read from
+ * \param [out] buffer Pointer to char array
+ * \param [in] size Amount chars to read
+ * \return In case of error returns #EXIT_CODE and buffer will be NULL otherwise actual number of read chars
+*/
+size_t read_in_buffer(FILE *stream, char **buffer, size_t size);
+
+
 int read_viewer(StringViewer *viewer, FILE *stream) {
     ASSERT_AND_LOG(viewer, INVALID_ARGUMENT, "StringViewer was NULL", return INVALID_ARGUMENT);
-    ASSERT_AND_LOG(stream, INVALID_ARGUMENT, "File was NULL",         return INVALID_ARGUMENT);
+    ASSERT_AND_LOG(stream, INVALID_ARGUMENT, "File was NULL", return INVALID_ARGUMENT);
 
     size_t size = get_file_size(stream);
 
-    char *text = (char *) calloc(size + 1, sizeof(char));
-    ASSERT_AND_LOG(text, ALLOCATE_FAIL, "Not enough memory for text", return ALLOCATE_FAIL);
+    char *text = NULL;
 
-    ASSERT_AND_LOG(!setvbuf(stream, NULL, _IOFBF, size), BUFFER_ERROR, "Set buffer to file size returns error", free(text); viewer -> status = FREE; return BUFFER_ERROR);
+    size = read_in_buffer(stream, &text, size);
 
-    size = fread(text, sizeof(char), size, stream);
-    ASSERT_AND_LOG(!ferror(stream), FILE_READ_ERROR, "Error while reading file", free(text); viewer -> status = FREE; return FILE_READ_ERROR);
+    ASSERT_AND_LOG(text, (int) size, "read_in_buffer() returned error, retranslate it", return (int) size);
 
-    ASSERT_AND_LOG(!setvbuf(stream, NULL, _IONBF, 0), BUFFER_ERROR, "Set buffer 0 returns error", free(text); viewer -> status = FREE; return BUFFER_ERROR);
-
-    text = (char *) realloc(text, size + 1);
-    ASSERT_AND_LOG(text, ALLOCATE_FAIL, "Reallocate text fail", return ALLOCATE_FAIL);
-
-    text[size] = '\0';
     int lines = 1 + replace_in_buffer(text, '\n', '\0');
 
     viewer -> lines = (String *) calloc(lines + 1, sizeof(String));
@@ -70,6 +72,28 @@ int read_viewer(StringViewer *viewer, FILE *stream) {
     viewer -> status = FILL;
 
     return OK;
+}
+
+
+size_t read_in_buffer(FILE *stream, char **buffer, size_t size) {
+    ASSERT_AND_LOG(!*buffer, INVALID_ARGUMENT, "Buffer points at something", return INVALID_ARGUMENT);
+
+    *buffer = (char *) calloc(size + 1, sizeof(char));
+    ASSERT_AND_LOG(*buffer, ALLOCATE_FAIL, "Not enough memory for buffer", return ALLOCATE_FAIL);
+
+    ASSERT_AND_LOG(!setvbuf(stream, NULL, _IOFBF, size), BUFFER_ERROR, "Set buffer to file size returns error", free(*buffer); *buffer = NULL; return BUFFER_ERROR);
+
+    size = fread(*buffer, sizeof(char), size, stream);
+    ASSERT_AND_LOG(!ferror(stream), FILE_READ_ERROR, "Error while reading file", free(*buffer); *buffer = NULL; return FILE_READ_ERROR);
+
+    ASSERT_AND_LOG(!setvbuf(stream, NULL, _IONBF, 0), BUFFER_ERROR, "Set buffer 0 returns error", free(*buffer); *buffer = NULL; return BUFFER_ERROR);
+
+    *buffer = (char *) realloc(*buffer, size + 1);
+    ASSERT_AND_LOG(*buffer, ALLOCATE_FAIL, "Reallocate buffer fail", return ALLOCATE_FAIL);
+
+    (*buffer)[size] = '\0';
+
+    return size;
 }
 
 
